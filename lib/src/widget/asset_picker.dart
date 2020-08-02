@@ -317,6 +317,7 @@ class AssetPicker extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 18.0,
                             fontWeight: FontWeight.normal,
+                            color: Colors.white
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -327,7 +328,7 @@ class AssetPicker extends StatelessWidget {
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: theme.iconTheme.color.withOpacity(0.5),
+                          color: Colors.white.withOpacity(0.5),
                         ),
                         child: Transform.rotate(
                           angle: provider.isSwitchingPath ? math.pi : 0.0,
@@ -335,7 +336,7 @@ class AssetPicker extends StatelessWidget {
                           child: Icon(
                             Icons.keyboard_arrow_down,
                             size: 20.0,
-                            color: theme.colorScheme.primary,
+                            color: Colors.grey,
                           ),
                         ),
                       ),
@@ -763,7 +764,17 @@ class AssetPicker extends StatelessWidget {
         return Positioned.fill(
           child: GestureDetector(
             onTap: () async {
-              final List<AssetEntity> result =
+
+              if (selected) {
+                provider.unSelectAsset(asset);
+              } else {
+                if (isSingleAssetMode) {
+                  provider.selectedAssets.clear();
+                }
+                provider.selectAsset(asset);
+              }
+
+             /* final List<AssetEntity> result =
                   await AssetPickerViewer.pushToViewer(
                 context,
                 currentIndex: index,
@@ -774,12 +785,12 @@ class AssetPicker extends StatelessWidget {
               );
               if (result != null) {
                 Navigator.of(context).pop(result);
-              }
+              }*/
             },
             child: AnimatedContainer(
               duration: switchingPathDuration,
               color: selected
-                  ? theme.colorScheme.primary.withOpacity(0.45)
+                  ? Colors.black.withOpacity(0.5)
                   : Colors.black.withOpacity(0.1),
             ),
           ), // 点击预览同目录下所有资源
@@ -1064,7 +1075,7 @@ class AssetPicker extends StatelessWidget {
           Widget loader;
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
-              loader = const ColoredBox(color: Color(0x10ffffff));
+              loader = const ColoredBox(color: Color(0x10000000));
               break;
             case LoadState.completed:
               SpecialImageType type;
