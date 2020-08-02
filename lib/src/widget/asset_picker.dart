@@ -418,9 +418,9 @@ class AssetPicker extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '(${pathEntity.assetCount})',
+                        ' (${pathEntity.assetCount})',
                         style: TextStyle(
-                          color: theme.textTheme.caption.color,
+                          color: Colors.black,
                           fontSize: 18.0,
                         ),
                         maxLines: 1,

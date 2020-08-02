@@ -121,7 +121,7 @@ class EnglishTextDelegate implements AssetsPickerTextDelegate {
   static final EnglishTextDelegate _instance = EnglishTextDelegate._internal();
 
   @override
-  String confirm = 'Confirm';
+  String confirm = 'Continue';
 
   @override
   String cancel = 'Cancel';
