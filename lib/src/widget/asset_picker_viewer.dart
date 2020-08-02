@@ -304,7 +304,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
         height: Screens.topSafeHeight + kToolbarHeight,
         child: Container(
           padding: EdgeInsets.only(top: Screens.topSafeHeight, right: 12.0),
-          color: widget.themeData.canvasColor.withOpacity(0.85),
+          color:const Color(0xFF087A9D).withOpacity(0.85),
           child: Row(
             children: <Widget>[
               const BackButton(),
