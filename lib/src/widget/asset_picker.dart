@@ -596,7 +596,7 @@ class AssetPicker extends StatelessWidget {
             minWidth: provider.isSelectedNotEmpty ? 48.0 : 20.0,
             height: appBarItemHeight,
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            color:Colors.transparent,
+            color:provider.isSelectedNotEmpty ? themeColor : themeColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(3.0),
             ),
