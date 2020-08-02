@@ -720,7 +720,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
               ? SystemUiOverlayStyle.light
               : SystemUiOverlayStyle.dark,
           child: Material(
-            color: Colors.black,
+            color: Colors.white,
             child: Stack(
               children: <Widget>[
                 Positioned.fill(
