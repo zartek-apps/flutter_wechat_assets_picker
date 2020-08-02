@@ -318,6 +318,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
                       style: TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.bold,
+                        color: Colors.white
                       ),
                     );
                   },
@@ -363,9 +364,8 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
                     SpecialPickerType.wechatMoment) {
                   return widget.themeData.colorScheme.secondary;
                 }
-                return provider.isSelectedNotEmpty
-                    ? widget.themeData.colorScheme.secondary
-                    : widget.themeData.dividerColor;
+                return widget.themeData.colorScheme.secondary;
+
               }(),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(3.0),

@@ -556,7 +556,7 @@ class AssetPicker extends StatelessWidget {
               return Text(Constants.textDelegate.emptyPlaceHolder);
             } else {
               return PlatformProgressIndicator(
-                color: theme.iconTheme.color,
+                color: themeColor,
                 size: Screens.width / gridCount / 3,
               );
             }
@@ -1155,7 +1155,7 @@ class AssetPicker extends StatelessWidget {
                       : Constants.textDelegate.preview,
                   style: TextStyle(
                     color: isSelectedNotEmpty
-                        ? null
+                        ? theme.textTheme.caption.color
                         : theme.textTheme.caption.color,
                     fontSize: 18.0,
                   ),
