@@ -336,7 +336,7 @@ class AssetPicker extends StatelessWidget {
                           child: Icon(
                             Icons.keyboard_arrow_down,
                             size: 20.0,
-                            color: Colors.grey,
+                            color: Colors.black,
                           ),
                         ),
                       ),
@@ -558,6 +558,7 @@ class AssetPicker extends StatelessWidget {
             } else {
               return PlatformProgressIndicator(
                 color: themeColor,
+                strokeWidth: 1.5,
                 size: Screens.width / gridCount / 3,
               );
             }
@@ -596,13 +597,13 @@ class AssetPicker extends StatelessWidget {
             height: appBarItemHeight,
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
             color:
-                provider.isSelectedNotEmpty ? themeColor : theme.dividerColor,
+                provider.isSelectedNotEmpty ? themeColor : themeColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(3.0),
             ),
             child: Text(
               provider.isSelectedNotEmpty && !isSingleAssetMode
-                  ? '${Constants.textDelegate.confirm}'
+                  ? '${Constants.textDelegate.confirm} '
                       '(${provider.selectedAssets.length}/${provider.maxAssets})'
                   : Constants.textDelegate.confirm,
               style: TextStyle(
