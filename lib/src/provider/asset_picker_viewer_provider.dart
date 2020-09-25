@@ -49,4 +49,14 @@ class AssetPickerViewerProvider extends ChangeNotifier {
     set.remove(entity);
     currentlySelectedAssets = List<AssetEntity>.from(set);
   }
+
+  /// Update Edited asset.
+  /// 取消选中资源
+  void updateAssetEntity(int index,AssetEntity entity) {
+    final List<AssetEntity> set =
+    List<AssetEntity>.from(currentlySelectedAssets);
+    set.removeAt(index);
+    set.insert(index, entity);
+    currentlySelectedAssets = List<AssetEntity>.from(set);
+  }
 }

@@ -84,7 +84,7 @@ class AssetPicker extends StatelessWidget {
   /// Allow users set custom item in the picker with several positions.
   /// 允许用户在选择器中添加一个自定义item，并指定位置。
   final CustomItemPosition customItemPosition;
-
+    // test change
   /// Static method to push with the navigator.
   /// 跳转至选择器的静态方法
   static Future<List<AssetEntity>> pickAssets(

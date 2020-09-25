@@ -119,7 +119,8 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
         ? Stack(
             children: <Widget>[
               if (_controller != null)
-                Positioned.fill(
+                Stack(
+                 children:<Widget>[ Positioned.fill(
                   child: Center(
                     child: AspectRatio(
                       aspectRatio: _controller.value.aspectRatio,
@@ -127,6 +128,19 @@ class _VideoPageBuilderState extends State<VideoPageBuilder> {
                     ),
                   ),
                 ),
+                   new Align(
+                     alignment: Alignment.bottomCenter,
+                     child:Padding(
+                       padding: EdgeInsets.all(1),
+                       child:new VideoProgressIndicator(
+                       _controller,
+                       allowScrubbing: false,
+                       colors: VideoProgressColors(
+                           backgroundColor: Colors.grey.withOpacity(0.5),
+                           playedColor: Colors.red),
+                     ),
+                   ),),
+                 ]),
               if (_controller != null)
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,

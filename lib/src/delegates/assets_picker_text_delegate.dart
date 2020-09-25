@@ -18,6 +18,9 @@ abstract class AssetsPickerTextDelegate {
   /// 编辑按钮的字段
   String edit;
 
+
+  String editCrop ;
+
   /// Placeholder when there's nothing can display in the picker.
   /// 选择器没有可显示的内容时的占位字段
   String emptyPlaceHolder;
@@ -54,6 +57,9 @@ abstract class AssetsPickerTextDelegate {
   /// to display the duration of the video or audio type of asset.
   /// 该字段用在选择器视频或音频部件上，用于显示视频或音频资源的时长。
   String durationIndicatorBuilder(Duration duration);
+
+
+  String editPhoto;
 }
 
 /// Default text delegate implements with Chinese.
@@ -74,6 +80,9 @@ class DefaultAssetsPickerTextDelegate implements AssetsPickerTextDelegate {
 
   @override
   String edit = '编辑';
+
+  @override
+  String editCrop = '编辑';
 
   @override
   String emptyPlaceHolder = '这里空空如也';
@@ -109,6 +118,9 @@ class DefaultAssetsPickerTextDelegate implements AssetsPickerTextDelegate {
             .padLeft(2, '0');
     return '$minute$separator$second';
   }
+
+  @override
+  String editPhoto = 'Edit';
 }
 
 /// [AssetsPickerTextDelegate] implements with English.
@@ -127,7 +139,10 @@ class EnglishTextDelegate implements AssetsPickerTextDelegate {
   String cancel = 'Cancel';
 
   @override
-  String edit = 'Edit';
+  String edit = 'Filter';
+
+  @override
+  String editCrop = 'Crop';
 
   @override
   String emptyPlaceHolder = 'Nothing here...';
@@ -145,7 +160,7 @@ class EnglishTextDelegate implements AssetsPickerTextDelegate {
   String original = 'Origin';
 
   @override
-  String preview = 'Preview';
+  String preview = 'Edit';
 
   @override
   String select = 'Select';
@@ -163,4 +178,7 @@ class EnglishTextDelegate implements AssetsPickerTextDelegate {
             .padLeft(2, '0');
     return '$minute$separator$second';
   }
+
+  @override
+  String editPhoto = 'Filter';
 }

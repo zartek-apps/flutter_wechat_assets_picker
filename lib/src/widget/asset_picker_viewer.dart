@@ -4,22 +4,31 @@
 ///
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:path/path.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
+import 'package:wechat_assets_picker/src/widget/videoeditor/video_trimmer.dart';
+import 'package:wechat_assets_picker/src/widget/videoeditor/videoeditscreen.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+import 'package:image/image.dart' as imageLib;
 
 import '../constants/constants.dart';
 
+import 'asset_picker_editor.dart';
 import 'builder/audio_page_builder.dart';
 import 'builder/fade_image_builder.dart';
 import 'builder/image_page_builder.dart';
 import 'builder/video_page_builder.dart';
+import 'photofilteredit/filters/preset_filters.dart';
+import 'photofilteredit/widgets/photo_filter.dart';
 import 'rounded_check_box.dart';
 
 class AssetPickerViewer extends StatefulWidget {
@@ -304,7 +313,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
         height: Screens.topSafeHeight + kToolbarHeight,
         child: Container(
           padding: EdgeInsets.only(top: Screens.topSafeHeight, right: 12.0),
-          color:const Color(0xFF087A9D).withOpacity(0.85),
+          color: const Color(0xFF087A9D).withOpacity(0.85),
           child: Row(
             children: <Widget>[
               const BackButton(),
@@ -316,10 +325,9 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
                     return Text(
                       '${snapshot.data + 1}/${widget.assets.length}',
                       style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white
-                      ),
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
                     );
                   },
                 ),
@@ -365,7 +373,6 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
                   return widget.themeData.colorScheme.secondary;
                 }
                 return widget.themeData.colorScheme.secondary;
-
               }(),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(3.0),
@@ -497,7 +504,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
   /// 音频的底部预览部件
   Widget _audioPreviewItem(AssetEntity asset) {
     return ColoredBox(
-      color: context.themeData.dividerColor,
+      color: Colors.grey,
       child: Center(child: Icon(Icons.audiotrack)),
     );
   }
@@ -646,7 +653,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
 
   /// Detail widget aligned to bottom.
   /// 底部信息部件
-  Widget get bottomDetail => AnimatedPositioned(
+  Widget bottomDetail(BuildContext context) => AnimatedPositioned(
         duration: kThemeAnimationDuration,
         curve: Curves.easeInOut,
         bottom: isDisplayingDetail
@@ -682,7 +689,31 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      const Spacer(),
+                      InkWell(
+                        onTap: () {
+                          redirectToPhotoEdit(context);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            widget.selectedAssets[currentIndex].type == AssetType.image?"Filter":"Trim",
+                            style: const TextStyle(fontSize: 18.0),
+                          ),
+                        ),
+                      ),
+                      if(widget.selectedAssets[currentIndex].type == AssetType.image)
+                        InkWell(
+                          onTap: () {
+                            redirectToPhotoCrop(context);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Crop",
+                              style: const TextStyle(fontSize: 18.0),
+                            ),
+                          ),
+                        ),
                       if (isAppleOS && provider != null)
                         ChangeNotifierProvider<AssetPickerViewerProvider>.value(
                           value: provider,
@@ -737,12 +768,122 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
                   ),
                 ),
                 appBar(context),
-                if (widget.selectedAssets != null) bottomDetail,
+                if (widget.selectedAssets != null) bottomDetail(context),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  void redirectToPhotoEdit(BuildContext context) async {
+    if (widget.selectedAssets[currentIndex].type == AssetType.image) {
+      File imageFile = await widget.selectedAssets[currentIndex].file;
+      var image = imageLib.decodeImage(imageFile.readAsBytesSync());
+      image = imageLib.copyResize(image, width: 600);
+      final String fileName = basename(imageFile.path);
+      print("ID=" + widget.selectedAssets[currentIndex].id.toString());
+
+      Map imagefile = await Navigator.of(context).push<dynamic>(
+        MaterialPageRoute<dynamic>(
+            builder: (BuildContext editorContext) => PhotoFilterSelector(
+                  title: Text("Add filter"),
+                  image: image,
+                  filters: presetFiltersList,
+                  filename: fileName,
+                  appBarColor: Color(0xFF087A9D),
+                  circleShape: false,
+                  loader: Center(child: CircularProgressIndicator()),
+                  fit: BoxFit.contain,
+                )),
+      );
+
+      if (imagefile != null && imagefile.containsKey('image_filtered')) {
+        final File file = imagefile['image_filtered']; // Your file object
+        final Uint8List byteData =
+            await file.readAsBytes(); // Convert to Uint8List
+        final AssetEntity imageEntity =
+            await PhotoManager.editor.saveImage(byteData);
+        print("ID=" + imageEntity.id.toString());
+        print("currentIndex=" + currentIndex.toString());
+
+        provider.updateAssetEntity(currentIndex, imageEntity);
+        setState(() {
+          widget.selectedAssets.removeAt(currentIndex);
+          widget.selectedAssets.insert(currentIndex, imageEntity);
+        });
+      }
+    } else if (widget.selectedAssets[currentIndex].type == AssetType.video) {
+      final Trimmer _trimmer = Trimmer();
+      File videoFile = await widget.selectedAssets[currentIndex].file;
+      print("videoFile=" + videoFile.path.toString());
+
+      if (videoFile != null) {
+        await _trimmer.loadVideo(videoFile: videoFile);
+        Map videoEdited = await Navigator.of(context)
+            .push<dynamic>(MaterialPageRoute<dynamic>(builder: (context) {
+          return TrimmerView(_trimmer);
+        }));
+        final File file = videoEdited['video'];
+        print("edited path"+file.path.toString());
+        String fileTitle = basename(file.path);
+        final AssetEntity videoEntity =
+            await PhotoManager.editor.saveVideo(file,title: fileTitle.split(".")[0]);
+        provider.updateAssetEntity(currentIndex, videoEntity);
+        setState(() {
+          widget.selectedAssets.removeAt(currentIndex);
+          widget.selectedAssets.insert(currentIndex, videoEntity);
+        });
+      }
+    }
+  }
+
+  void redirectToPhotoCrop(BuildContext context) async {
+    if (widget.selectedAssets[currentIndex].type == AssetType.image) {
+      File imageFile = await widget.selectedAssets[currentIndex].file;
+
+      File croppedFile = await ImageCropper.cropImage(
+          sourcePath: imageFile.path,
+          aspectRatioPresets: Platform.isAndroid
+              ? [
+            CropAspectRatioPreset.square,
+            CropAspectRatioPreset.ratio3x2,
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.ratio4x3,
+            CropAspectRatioPreset.ratio16x9
+          ]
+              : [
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.square,
+            CropAspectRatioPreset.ratio3x2,
+            CropAspectRatioPreset.ratio4x3,
+            CropAspectRatioPreset.ratio5x3,
+            CropAspectRatioPreset.ratio5x4,
+            CropAspectRatioPreset.ratio7x5,
+            CropAspectRatioPreset.ratio16x9
+          ],
+          androidUiSettings: AndroidUiSettings(
+              toolbarTitle: 'Crop Image',
+              toolbarColor: Color(0xFF087A9D),
+              toolbarWidgetColor: Colors.white,
+              initAspectRatio: CropAspectRatioPreset.original,
+              lockAspectRatio: false),
+          iosUiSettings: IOSUiSettings(
+            title: 'Cropper',
+          ));
+      if (croppedFile != null) {
+        final Uint8List byteData =
+        await croppedFile.readAsBytes(); // Convert to Uint8List
+        final AssetEntity imageEntity =
+        await PhotoManager.editor.saveImage(byteData);
+
+        provider.updateAssetEntity(currentIndex, imageEntity);
+        setState(() {
+          widget.selectedAssets.removeAt(currentIndex);
+          widget.selectedAssets.insert(currentIndex, imageEntity);
+        });
+      }
+    }
   }
 }

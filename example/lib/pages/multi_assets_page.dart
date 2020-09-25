@@ -121,9 +121,60 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
           ) async {
             return await AssetPicker.pickAssets(
               context,
-              maxAssets: maxAssetsCount,
+              maxAssets: 10,
               selectedAssets: assets,
+              pickerTheme: ThemeData(
+                  accentColor:const Color(0xFF087A9D),
+                  primaryColor:const Color(0xFF087A9D),
+                  primarySwatch: Colors.grey,
+                  disabledColor: Colors.grey,
+                  cardColor: Colors.white,
+                  canvasColor: Colors.grey[50],
+                  scaffoldBackgroundColor: Colors.white,
+                  brightness: Brightness.light,
+                  primaryColorBrightness: Brightness.light,
+                  backgroundColor: Colors.white,
+                  buttonColor: const Color(0xFF087A9D),
+                  appBarTheme: const AppBarTheme(elevation: 0.0),
+                  fontFamily: 'ProximaNova',
+                  iconTheme: IconThemeData(color: Colors.white),
+                  textTheme: TextTheme(
+                    bodyText1: TextStyle(
+                        color: Colors.white,
+                        height: 1.2,
+                        fontWeight: FontWeight.w400,
+                        fontStyle: FontStyle.normal,
+                        fontSize: 14,),
+                    caption: TextStyle(
+                      color: Colors.white,
+                      height: 1.2,
+                      fontWeight: FontWeight.w400,
+                      fontStyle: FontStyle.normal,
+                      fontSize: 14,),
+                  ),
+                  bottomSheetTheme: BottomSheetThemeData(
+                      backgroundColor: Colors.black.withOpacity(0))),
+              textDelegate: EnglishTextDelegate(),
               requestType: RequestType.common,
+              customItemPosition: CustomItemPosition.prepend,
+              customItemBuilder: (BuildContext context) {
+                return GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () async {
+                    final AssetEntity result = await CameraPicker.pickFromCamera(
+                        context,
+                        isAllowRecording: true,
+                        textDelegate: EnglishCameraPickerTextDelegateWithRecording(),
+                        maximumRecordingDuration: const Duration(seconds: 180));
+                    if (result != null) {
+                      Navigator.of(context).pop(<AssetEntity>[...assets, result]);
+                    }
+                  },
+                  child: const Center(
+                    child: Icon(Icons.camera_enhance, size: 42.0, color: Colors.grey),
+                  ),
+                );
+              },
             );
           },
         ),
