@@ -1317,7 +1317,7 @@ class AssetPicker extends StatelessWidget {
                         child: Column(
                           children: <Widget>[
                             Expanded(child: assetsGrid(context)),
-                            if (!isSingleAssetMode) bottomActionBar(context),
+                            bottomActionBar(context),
                           ],
                         ),
                       ),

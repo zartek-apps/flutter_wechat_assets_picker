@@ -121,7 +121,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
           ) async {
             return await AssetPicker.pickAssets(
               context,
-              maxAssets: 10,
+              maxAssets: 1,
               selectedAssets: assets,
               pickerTheme: ThemeData(
                   accentColor:const Color(0xFF087A9D),
