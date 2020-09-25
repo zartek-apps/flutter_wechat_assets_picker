@@ -438,6 +438,8 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
               onTap: () {
                 if (widget.assets == widget.selectedAssets) {
                   pageController.jumpToPage(index);
+                  setState(() {
+                  });
                 }
               },
               child: Selector<AssetPickerViewerProvider, List<AssetEntity>>(
