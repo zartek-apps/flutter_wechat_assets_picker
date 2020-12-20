@@ -1192,7 +1192,7 @@ class AssetPicker extends StatelessWidget {
       ),
       color: theme.primaryColor.withOpacity(isAppleOS ? 0.90 : 1.0),
       child: Row(children: <Widget>[
-        if (!isAppleOS) previewButton(context),
+         previewButton(context),
         if (isAppleOS) const Spacer(),
         if (isAppleOS) confirmButton(context),
       ]),
