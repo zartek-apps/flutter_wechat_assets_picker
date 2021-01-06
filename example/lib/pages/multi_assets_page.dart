@@ -124,8 +124,8 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
               maxAssets: 1,
               selectedAssets: assets,
               pickerTheme: ThemeData(
-                  accentColor:const Color(0xFF087A9D),
-                  primaryColor:const Color(0xFF087A9D),
+                  accentColor:const Color(0xFF003962),
+                  primaryColor:const Color(0xFF003962),
                   primarySwatch: Colors.grey,
                   disabledColor: Colors.grey,
                   cardColor: Colors.white,
@@ -134,7 +134,7 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
                   brightness: Brightness.light,
                   primaryColorBrightness: Brightness.light,
                   backgroundColor: Colors.white,
-                  buttonColor: const Color(0xFF087A9D),
+                  buttonColor: const Color(0xFF003962),
                   appBarTheme: const AppBarTheme(elevation: 0.0),
                   fontFamily: 'ProximaNova',
                   iconTheme: IconThemeData(color: Colors.white),
@@ -165,9 +165,58 @@ class _MultiAssetsPageState extends State<MultiAssetsPage> {
                         context,
                         isAllowRecording: true,
                         textDelegate: EnglishCameraPickerTextDelegateWithRecording(),
-                        maximumRecordingDuration: const Duration(seconds: 180));
+                        maximumRecordingDuration: const Duration(seconds: 60));
                     if (result != null) {
-                      Navigator.of(context).pop(<AssetEntity>[...assets, result]);
+                      final AssetPickerProvider provider = AssetPickerProvider(
+                        maxAssets: 1,
+                        pageSize: 320,
+                        pathThumbSize: 200,
+                        selectedAssets:  <AssetEntity>[...assets, result],
+                        requestType:  RequestType.common,
+                        routeDuration:  const Duration(milliseconds: 300),
+                      );
+                       List<AssetEntity> resultTemp =
+                      await AssetPickerViewer.pushToViewer(
+                        context,
+                        currentIndex: 0,
+                        assets: provider.selectedAssets,
+                        selectedAssets: provider.selectedAssets,
+                        selectorProvider: provider,
+                        themeData: ThemeData(
+                            accentColor:const Color(0xFF003962),
+                            primaryColor:const Color(0xFF003962),
+                            primarySwatch: Colors.grey,
+                            disabledColor: Colors.grey,
+                            cardColor: Colors.white,
+                            canvasColor: Colors.grey[50],
+                            scaffoldBackgroundColor: Colors.white,
+                            brightness: Brightness.light,
+                            primaryColorBrightness: Brightness.light,
+                            backgroundColor: Colors.white,
+                            buttonColor: const Color(0xFF003962),
+                            appBarTheme: const AppBarTheme(elevation: 0.0),
+                            fontFamily: 'ProximaNova',
+                            iconTheme: IconThemeData(color: Colors.white),
+                            textTheme: TextTheme(
+                              bodyText1: TextStyle(
+                                color: Colors.white,
+                                height: 1.2,
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.normal,
+                                fontSize: 14,),
+                              caption: TextStyle(
+                                color: Colors.white,
+                                height: 1.2,
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.normal,
+                                fontSize: 14,),
+                            ),
+                            bottomSheetTheme: BottomSheetThemeData(
+                                backgroundColor: Colors.black.withOpacity(0))),
+                      );
+                      if (resultTemp != null) {
+                      Navigator.of(context).pop(<AssetEntity>[...assets, resultTemp[0]]);
+                      }
                     }
                   },
                   child: const Center(

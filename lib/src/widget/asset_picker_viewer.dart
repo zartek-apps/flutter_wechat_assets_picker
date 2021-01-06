@@ -313,7 +313,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
         height: Screens.topSafeHeight + kToolbarHeight,
         child: Container(
           padding: EdgeInsets.only(top: Screens.topSafeHeight, right: 12.0),
-          color: const Color(0xFF087A9D).withOpacity(0.85),
+          color: const Color(0xFF003962).withOpacity(0.95),
           child: Row(
             children: <Widget>[
               const BackButton(),
@@ -332,7 +332,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
                   },
                 ),
               const Spacer(),
-              if (isAppleOS && provider != null) selectButton,
+            //  if (isAppleOS && provider != null) selectButton,
               if (!isAppleOS && provider != null ||
                   widget.specialPickerType == SpecialPickerType.wechatMoment)
                 confirmButton(context),
@@ -721,8 +721,8 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
                           value: provider,
                           child: confirmButton(context),
                         )
-                      else
-                        selectButton,
+                    /*  else
+                        selectButton,*/
                     ],
                   ),
                 ),
@@ -790,11 +790,13 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
       Map imagefile = await Navigator.of(context).push<dynamic>(
         MaterialPageRoute<dynamic>(
             builder: (BuildContext editorContext) => PhotoFilterSelector(
-                  title: Text("Add filter"),
+                  title: Text("Add filter",style: TextStyle(
+                    color: Colors.white
+                  ),),
                   image: image,
                   filters: presetFiltersList,
                   filename: fileName,
-                  appBarColor: Color(0xFF087A9D),
+                  appBarColor: Color(0xFF003962),
                   circleShape: false,
                   loader: Center(child: CircularProgressIndicator()),
                   fit: BoxFit.contain,
@@ -807,8 +809,6 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
             await file.readAsBytes(); // Convert to Uint8List
         final AssetEntity imageEntity =
             await PhotoManager.editor.saveImage(byteData);
-        print("ID=" + imageEntity.id.toString());
-        print("currentIndex=" + currentIndex.toString());
 
         provider.updateAssetEntity(currentIndex, imageEntity);
         setState(() {
@@ -867,7 +867,7 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
           ],
           androidUiSettings: AndroidUiSettings(
               toolbarTitle: 'Crop Image',
-              toolbarColor: Color(0xFF087A9D),
+              toolbarColor: Color(0xFF003962),
               toolbarWidgetColor: Colors.white,
               initAspectRatio: CropAspectRatioPreset.original,
               lockAspectRatio: false),

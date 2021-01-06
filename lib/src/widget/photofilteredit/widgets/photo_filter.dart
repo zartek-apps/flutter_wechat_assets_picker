@@ -110,17 +110,22 @@ class _PhotoFilterSelectorState extends State<PhotoFilterSelector> {
             loading
                 ? Container()
                 : IconButton(
-                    icon: Icon(Icons.check),
+                    icon: Icon(Icons.check,color: Colors.white,),
                     onPressed: () async {
                       setState(() {
                         loading = true;
                       });
                       var imageFile = await saveFilteredImage();
-
                       Navigator.pop(context, {'image_filtered': imageFile});
                     },
                   )
           ],
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back,color: Colors.white,),
+            onPressed: () async {
+              Navigator.pop(context);
+            },
+          ),
         ),
         body: Container(
           width: double.infinity,

@@ -163,7 +163,7 @@ class AssetPicker extends StatelessWidget {
           customItemPosition: customItemPosition,
           customItemBuilder: customItemBuilder,
         );
-        final List<AssetEntity> result = await Navigator.of(
+        List<AssetEntity> result = await Navigator.of(
           context,
           rootNavigator: true,
         ).push<List<AssetEntity>>(
@@ -173,6 +173,7 @@ class AssetPicker extends StatelessWidget {
             transitionDuration: routeDuration,
           ),
         );
+
         return result;
       } else {
         return null;
@@ -613,9 +614,23 @@ class AssetPicker extends StatelessWidget {
                 fontWeight: FontWeight.normal,
               ),
             ),
-            onPressed: () {
-              if (provider.isSelectedNotEmpty) {
+            onPressed: () async{
+             /* if (provider.isSelectedNotEmpty) {
                 Navigator.of(context).pop(provider.selectedAssets);
+              }*/
+              if (provider.isSelectedNotEmpty) {
+                final List<AssetEntity> result =
+                await AssetPickerViewer.pushToViewer(
+                  context,
+                  currentIndex: 0,
+                  assets: provider.selectedAssets,
+                  selectedAssets: provider.selectedAssets,
+                  selectorProvider: provider,
+                  themeData: theme,
+                );
+                if (result != null) {
+                  Navigator.of(context).pop(result);
+                }
               }
             },
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -1192,7 +1207,7 @@ class AssetPicker extends StatelessWidget {
       ),
       color: theme.primaryColor.withOpacity(isAppleOS ? 0.90 : 1.0),
       child: Row(children: <Widget>[
-         previewButton(context),
+        // previewButton(context),
         if (isAppleOS) const Spacer(),
         if (isAppleOS) confirmButton(context),
       ]),
