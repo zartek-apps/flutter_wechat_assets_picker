@@ -783,7 +783,15 @@ class AssetPickerViewerState extends State<AssetPickerViewer>
     if (widget.selectedAssets[currentIndex].type == AssetType.image) {
       File imageFile = await widget.selectedAssets[currentIndex].file;
       var image = imageLib.decodeImage(imageFile.readAsBytesSync());
-      image = imageLib.copyResize(image, width: 600);
+      print("width = ${widget.selectedAssets[currentIndex].width}");
+
+      try {
+        image = imageLib.copyResize(image, width: widget.selectedAssets[currentIndex].width>1024?1024:widget.selectedAssets[currentIndex].width);
+      } catch (e) {
+        print(e);
+        image = imageLib.copyResize(image, width: 600);
+
+      }
       final String fileName = basename(imageFile.path);
       print("ID=" + widget.selectedAssets[currentIndex].id.toString());
 
